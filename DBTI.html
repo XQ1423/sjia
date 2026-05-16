@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DBTI 全球慢性病/罕见病友发疯人格测试</title>
+    <style>
+        :root {
+            --primary-color: #ff6b6b;
+            --secondary-color: #4ecdc4;
+            --bg-color: #f7f9fc;
+            --text-color: #2c3e50;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-color); line-height: 1.6; padding: 20px; display: flex; justify-content: center; }
+        .container { max-width: 500px; width: 100%; background: #fff; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); padding: 25px; overflow: hidden; }
+        
+        /* 页面切换控制 */
+        .welcome-page, .question-page, .result-page { display: none; }
+        .active { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* 首页 */
+        h1 { font-size: 2.8rem; text-align: center; color: var(--primary-color); margin-bottom: 5px; font-weight: 900; letter-spacing: 2px; }
+        .subtitle { text-align: center; font-size: 1.1rem; color: #7f8c8d; margin-bottom: 25px; font-weight: bold; }
+        .intro-text { background: #fff5f5; border-left: 5px solid var(--primary-color); padding: 15px; border-radius: 8px; font-size: 0.95rem; margin-bottom: 30px; text-align: justify; }
+        .start-btn { display: block; width: 100%; background: var(--primary-color); color: #fff; border: none; padding: 15px; font-size: 1.2rem; border-radius: 30px; cursor: pointer; font-weight: bold; transition: transform 0.2s; text-align: center; }
+        .start-btn:hover { transform: scale(1.02); }
+        .author { text-align: center; font-size: 0.85rem; color: #95a5a6; margin-top: 20px; font-weight: bold; }
+
+        /* 答题页 */
+        .progress-box { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; color: #7f8c8d; font-size: 0.9rem; }
+        .progress-bar { height: 6px; background: #eee; border-radius: 3px; flex-grow: 1; margin-right: 15px; position: relative; overflow: hidden; }
+        .progress { height: 100%; background: var(--secondary-color); width: 0%; transition: width 0.3s; }
+        .q-text { font-size: 1.15rem; font-weight: bold; margin-bottom: 25px; color: #34495e; text-align: justify; }
+        .option-btn { display: block; width: 100%; background: #f8f9fa; border: 2px solid #e9ecef; padding: 15px; text-align: left; border-radius: 12px; margin-bottom: 15px; cursor: pointer; font-size: 0.95rem; transition: all 0.2s; line-height: 1.4; }
+        .option-btn:hover { background: #e8f4f8; border-color: var(--secondary-color); }
+
+        /* 结果页 */
+        .result-header { text-align: center; margin-bottom: 20px; }
+        .ip-title { font-size: 2rem; font-weight: 800; color: #2c3e50; margin-top: 5px; }
+        .ip-tag { display: inline-block; background: var(--primary-color); color: white; padding: 4px 14px; border-radius: 15px; font-size: 0.85rem; margin-top: 5px; font-weight: bold; }
+        .ip-desc { background: #f8f9fa; padding: 18px; border-radius: 12px; font-size: 0.95rem; margin-bottom: 20px; white-space: pre-line; text-align: justify; border: 1px solid #e9ecef; }
+        .warm-words { background: #e8f8f5; border-radius: 12px; padding: 15px; font-size: 0.9rem; color: #16a085; margin-bottom: 30px; text-align: justify; line-height: 1.5; border-left: 5px solid var(--secondary-color); }
+        
+        /* sJIA科普底栏（已删除二维码） */
+        .kp-section { border-top: 2px dashed #cbd5e1; padding-top: 25px; margin-top: 25px; }
+        .kp-title { font-size: 1.1rem; font-weight: bold; color: #1e293b; margin-bottom: 12px; display: flex; align-items: center; }
+        .kp-text { font-size: 0.85rem; color: #64748b; text-align: justify; margin-bottom: 15px; line-height: 1.6; }
+        .contact-box { background: #f1f5f9; padding: 12px; border-radius: 8px; font-size: 0.85rem; color: #475569; text-align: center; line-height: 1.5; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="welcome" class="welcome-page active">
+        <h1>DBTI</h1>
+        <div class="subtitle">慢性病/罕见病趣味抗病风格测试</div>
+        <div class="intro-text">
+            这是一个专门为正在与疾病日常肉搏的战友们量身打造的趣味探索。生病久了，我们都在不知不觉中进化出了独特的“抗病形态”。
+            连续打针吃药让你变成了无欲无求的高僧，还是时刻在发疯边缘试探的嘴硬抗体？
+            18道灵魂拷问，测测你的真实抗病IP形象！
+        </div>
+        <button class="start-btn" onclick="startTest()">开启抗病副本测试</button>
+        <div class="author">制作方：sJIA守护者联盟</div>
+    </div>
+
+    <div id="quiz" class="question-page">
+        <div class="progress-box">
+            <div class="progress-bar"><div id="progress" class="progress"></div></div>
+            <span id="progress-text">1/18</span>
+        </div>
+        <div id="question-text" class="q-text">题目加载中...</div>
+        <div id="options-container"></div>
+    </div>
+
+    <div id="result" class="result-page">
+        <div class="result-header">
+            <div style="font-size: 4.5rem;" id="res-avatar">🤒</div>
+            <div class="ip-title" id="res-name">测试结果</div>
+            <div class="ip-tag" id="res-tag">主打一个真实</div>
+        </div>
+        <div class="ip-desc" id="res-desc">描述加载中...</div>
+        <div class="warm-words" id="res-warm"></div>
+
+        <div class="kp-section">
+            <div class="kp-title">🎗️ 关于 sJIA 的小科普</div>
+            <div class="kp-text">
+                很抱歉知道你正在和疾病抗争，好巧！和你一样，我们是一群身患<b>全身型幼年特发性关节炎（sJIA）/成人Still病</b>的小朋友。
+                这是一种伴有其他组织、器官损害的全身性罕见多基因自身炎症性疾病，以固有免疫系统的不适当激活和促炎细胞因子如白细胞介素 IL-1、IL-6 和 IL-18 等的过度分泌为主要免疫学特征，无自身抗体。
+                患者主要会出现发热、皮疹、关节炎三大主要临床表现，以弛张热为突出表现，且易并发巨噬细胞活化综合征，危及生命。目前已被纳入我国第二批罕见病目录中。
+            </div>
+            <div class="contact-box">
+                🤝 如您遇到确诊/疑似的朋友需要寻求帮助，请联系我们<br><b>微信：PP1423Q</b>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// 18道完全对齐12个人格分类的发疯选择题
+const questions = [
+    {
+        id: 1,
+        text: "1. 大早上的，又到了该吃/打一堆药或针的时候，你看着那堆药丸心里在想啥？",
+        options: [
+            { text: "A. 药到病除！今天又是充满希望、回血满格的一天！", score: { murloc: 2 } },
+            { text: "B. 天天吃天天打，我肚子现在就像个移动药房，主打一个赛博朋克。", score: { complainer: 2 } },
+            { text: "C. （面无表情咽下去）四大皆空，我只是个莫得感情的无水吞服机器。", score: { monk: 2 } }
+        ]
+    },
+    {
+        id: 2,
+        text: "2. 医生看完化验单报告说你的指标控制得不错，你的第一反应通常是：",
+        options: [
+            { text: "A. 狂夸医生！“您真是神医转世！”（恨不得当场定做一面锦旗送过去）", score: { gratitude: 2 } },
+            { text: "B. 真的吗？这不会是暴风雨前的平静吧？赶紧把前几个月的数据拿出来比对复盘。", score: { thinker: 2 } },
+            { text: "C. 哦好（内心毫无波澜），那今晚奖励自己提前半小时躺平。逃避可耻但有用嘛。", score: { drunkard: 2 } }
+        ]
+    },
+    {
+        id: 3,
+        text: "3. 在网上刷到无病呻吟的网友发帖“救命我熬夜感冒好虚啊”，天天跟重病肉搏的你会：",
+        options: [
+            { text: "A. 敲击键盘在线发疯：“这点病就要死要活？那我这边建议你直接准备后事呢亲。”", score: { complainer: 2 } },
+            { text: "B. 算了，人类的悲欢并不相通，懒得管。痛苦留给自己，默默划走继续emo。", score: { loner: 2 } },
+            { text: "C. 还是会热心地在下面评论安慰：“抱抱，多喝热水，注意保暖哦。”", score: { gratitude: 1, romantic: 1 } }
+        ]
+    },
+    {
+        id: 4,
+        text: "4. 当身体某个关节突然又开始隐隐作痛，或者体温有点微热低烧时，你第一操作是：",
+        options: [
+            { text: "A. 炸裂！立刻弹射起步翻出体温计，并在脑子里演完了一整部医学纪录片。", score: { anxious: 2 } },
+            { text: "B. 情绪一秒写在脸上，大惊小怪地跟周围人倒苦水：“完蛋了！它又来了！”", score: { shocker: 2 } },
+            { text: "C. 动作熟练地躺平、盖被子、闭眼：“只要我不动，痛觉和热度就追不上我。”", score: { monk: 2 } }
+        ]
+    },
+    {
+        id: 5,
+        text: "5. 看到家里人或者朋友为了给你治病辛苦奔波、主动塞钱买各种高昂补品：",
+        options: [
+            { text: "A. 极度愧疚，觉得自己就像个无底洞碎钞机，只想克扣自己的伙食费来省钱。", score: { moneyGiver: 2 } },
+            { text: "B. 瞬间红了眼眶，感动得一塌糊涂，内心暗暗发誓以后一定要百倍报答他们。", score: { gratitude: 2 } },
+            { text: "C. 感到一种窒息的压力，不想成为焦点，只想把自己塞进无人能打扰的蜗牛壳。", score: { loner: 2 } }
+        ]
+    },
+    {
+        id: 6,
+        text: "6. 你因便秘坐在马桶上（已长达30分钟），拉不出很难受。此时你更倾向于：",
+        options: [
+            { text: "A. 再坐三十分钟看看，说不定就有了。顺便把这个月的化验报告复盘一遍。", score: { thinker: 2 } },
+            { text: "B. 用力拍打自己的屁股并说：“死屁股，快拉啊！”（开启精神喊话）", score: { complainer: 1, shocker: 1 } },
+            { text: "C. 使用开塞露，快点拉出来才好。拉完出来继续开黑打游戏、看小说麻痹自己。", score: { drunkard: 2 } }
+        ]
+    },
+    {
+        id: 7,
+        text: "7. 大多数人是善良的，你愿相信好人更多吗？",
+        options: [
+            { text: "A. 其实邪恶的人心比世界上的痔疮更多。看啥都不顺眼，毁灭吧赶紧的。", score: { complainer: 2 } },
+            { text: "B. 也许吧。不管世界怎样，反正我已经破罐子破摔了，自暴自弃伪装成废物挺好。", score: { loser: 2 } },
+            { text: "C. 是的，我愿相信好人更多。那些一路上给过我温暖的医护和病友，让我无比柔和。", score: { gratitude: 2, romantic: 1 } }
+        ]
+    },
+    {
+        id: 8,
+        text: "8. 面对医生罗列出的一长串“严格忌口清单”（火锅、烧烤、生冷海鲜等），你的态度是：",
+        options: [
+            { text: "A. 严防死守！科学抗病！查清每一个食物的嘌呤和细胞因子影响，绝不越界半步。", score: { thinker: 2 } },
+            { text: "B. 嘴硬心虚。一边偷偷背着医生点外卖，一边嘀咕：吃一口快乐垃圾食品，正好毒死病毒。", score: { complainer: 2 } },
+            { text: "C. 彻底丧失对食物的欲望，感觉吃什么都像在嚼木头，无所谓了，四大皆不动。", score: { monk: 2 } }
+        ]
+    },
+    {
+        id: 9,
+        text: "9. 在医院门诊候诊区等了足足3个小时，前面还有50个人，你一般怎么度过？",
+        options: [
+            { text: "A. 盯着旁边路过的帅哥医生/漂亮护士，开始在脑子里疯狂编排80集医疗偶像剧。", score: { romantic: 2 } },
+            { text: "B. 眼神空洞地原地打坐。只要心静自然凉，只要我睡得够快，时间就折叠了。", score: { monk: 2 } },
+            { text: "C. 掏出手机疯狂沉浸在网络玄幻小说或者游戏世界里，只要能逃避现实，哪里都是家。", score: { drunkard: 2 } }
+        ]
+    },
+    {
+        id: 10,
+        text: "10. 当你得知自己得的是需要长期战斗、甚至听起来奇奇怪怪的“罕见病”时：",
+        options: [
+            { text: "A. 自嘲一笑：“原来老子是全球限量款，不包邮不退换。情绪不过夜，吗喽要快乐！”", score: { murloc: 2 } },
+            { text: "B. 焦虑情绪一秒飙升，一语惊人：“完了，我是不是要交代在这里了？！”", score: { shocker: 2 } },
+            { text: "C. 彻底躺平，嘴上喊着‘反正我是个小废物了’，但心里其实还保留着一丝坚韧。", score: { loser: 2 } }
+        ]
+    },
+    {
+        id: 11,
+        text: "11. 医生调整了药方，并递给你一张写满各种奇怪副作用（如发胖、情绪波动）的说明书：",
+        options: [
+            { text: "A. 变成研究狂人，一定要用统计学和因果关系把每一个副作用的概率搞得明明白白。", score: { thinker: 2 } },
+            { text: "B. 瞬间化身“哦不人”，看一条副作用就觉得它一定会发生在自己身上，在脑内演悲剧。", score: { anxious: 2 } },
+            { text: "C. 默不作声地收起来，不想跟任何人讨论，把所有的隐忧和痛苦都留给自己消化。", score: { loner: 2 } }
+        ]
+    },
+    {
+        id: 12,
+        text: "12. 输液打点滴的时候，你看着药水在输液管里滴答滴答地落下来，此时你：",
+        options: [
+            { text: "A. 觉得那是神圣的生命之泉，用温柔感化的浪漫眼神，注视着这冰冷的病房。", score: { romantic: 2 } },
+            { text: "B. 瞬间化身精算师，精密盘点滴速，用公式计算出点滴滴完需要的精准分钟数。", score: { thinker: 2 } },
+            { text: "C. 毫无感觉，单手掏出手机调大音量开始刷搞笑视频，好了伤疤立马忘了疼。", score: { murloc: 2 } }
+        ]
+    },
+    {
+        id: 13,
+        text: "13. 看着镜子里因为长期吃药、治疗或者病痛折磨而有些许改变的容貌或体态，你：",
+        options: [
+            { text: "A. 开启自恋/浪漫滤镜：这都是老子和病毒肉搏留下的勋章，依然是人群中最靓的仔！", score: { romantic: 2 } },
+            { text: "B. 破罐子破摔，自暴自弃：“反正变成伪装废物了，丑就丑吧，谁也别管我。”", score: { loser: 2 } },
+            { text: "C. 无所谓了，美丑对于一个已经看淡一切、正在修仙的高僧来说，不过是一具臭皮囊。", score: { monk: 2 } }
+        ]
+    },
+    {
+        id: 14,
+        text: "14. 新加入了一个同病相怜的垂直病友交流群后，你通常在群里扮演什么角色？",
+        options: [
+            { text: "A. 感谢派代表，每天真诚分享治疗心得，疯狂给热心病友和医生科普点赞。", score: { gratitude: 2 } },
+            { text: "B. 绝不说话的深海潜水员，情感极度疏离不想被干扰，默默看着群友发疯。", score: { loner: 2 } },
+            { text: "C. 偶尔探头冒泡，发一堆“握草”表情包，一看到稍微异常的指标就跟着大惊小怪。", score: { shocker: 2 } }
+        ]
+    },
+    {
+        id: 15,
+        text: "15. 站在当下的节点，回望这一段与疾病纠缠的漫长时光，你最真实的感悟是：",
+        options: [
+            { text: "A. 感谢那个拼尽全力、至今都没有放弃认输的自己，老子今天依然要回血快乐！", score: { murloc: 2 } },
+            { text: "B. 命运就像一坨巨大的狗屎狠狠砸在我头上，但我依然要顽强地当那个嘴硬的抗体。", score: { complainer: 2 } },
+            { text: "C. 躲进网络的虚拟现实里挺好的，靠游戏小说麻痹自己，能逃避一秒是一秒。", score: { drunkard: 2 } }
+        ]
+    },
+    /* 以下为新增题目：用于精准分流和强化 12 人格的排列组合触发度 */
+    {
+        id: 16,
+        text: "16. 突然发现这个月的治疗账单超出了预期，你的第一反应是：",
+        options: [
+            { text: "A. 极度内耗和自怨自艾，开始盘算下个月怎么从自己的伙食费和衣服里把钱省出来。", score: { moneyGiver: 2 } },
+            { text: "B. 习惯性焦虑爆炸，一摸额头完了是不是又发烧了，脑内剧场再次开演悲剧。", score: { anxious: 2 } },
+            { text: "C. 嘴灭啵，心里坚韧地想：“破罐子破摔吧，钱没了再赚，老子命硬着呢！”", score: { loser: 2 } }
+        ]
+    },
+    {
+        id: 17,
+        text: "17. 当身边的人试图开导你，跟你说“多运动、心态好病自然就好了”这种高高在上的话时：",
+        options: [
+            { text: "A. 情绪大起大落，当场回怼一句震惊全家的语录：“你行你来生个试试？！”", score: { shocker: 2 } },
+            { text: "B. 冷漠是我的保护壳。一句话都不想反驳，情感疏离，内心毫无波澜地走开。", score: { loner: 2 } },
+            { text: "C. 靠打游戏/看爽文来麻痹听觉。无欲无求不沾现实，你爱说说你的，我玩我的。", score: { drunkard: 2 } }
+        ]
+    },
+    {
+        id: 18,
+        text: "18. 如果现在能给你一个可以实现的关于身体的小愿望，你更希望：",
+        options: [
+            { text: "A. 让我拥有一个能精准算出每天免疫细胞和白介素波动的全知大脑！", score: { thinker: 2 } },
+            { text: "B. 不要钱！不要高技术！只要让我像单细胞吗喽一样，情绪不过夜，永远傻乐就行！", score: { murloc: 2 } },
+            { text: "C. 只要家人和医生不为我受累，只要他们能轻松点，让我怎样我都戴德接受。", score: { moneyGiver: 1, gratitude: 1 } }
+        ]
+    }
+];
+
+// 完整对齐海报 12 个人格的数据库
+const personalities = {
+    gratitude: { name: "锦旗狂魔", tag: "感恩型抗病战友", avatar: "🙏", desc: "【感恩型抗病战友】\n感谢医生和家人的辛勤付出，内心无比柔和且坚定。总是宁可委屈自己，也不想给任何人添一丝麻烦。" },
+    anxious: { name: "哦不人", tag: "习惯性焦虑体质", avatar: "😰", desc: "【习惯性焦虑体质】\n指标微调就全线炸裂，每天都在脑内演好几出悲剧。极度缺乏安全感，自己吓自己专业户。" },
+    monk: { name: "药罐高僧", tag: "佛系看淡一切玩家", avatar: "🧘", desc: "【佛系看淡一切玩家】\n四大皆空，四大皆不动。不悲不喜视病为劫难，修仙式抗病，任何指标起伏都掀不起你内心的波澜。" },
+    complainer: { name: "嘴硬抗体", tag: "嘴硬心软吐槽泥石流", avatar: "💩", desc: "【嘴硬心软吐槽泥石流】\n看啥都不顺眼，世界是坨巨大的狗屎。虽然天天嘴碎发疯，但群友一旦求助，你绝对是呼应最快最实在的那一个。" },
+    murloc: { name: "回血吗喽", tag: "简单易满足原始快乐", avatar: "🐒", desc: "【简单易满足原始快乐】\n拒绝内卷，情绪不过夜。好了伤疤立马就忘疼，只要今天身体不痛不烧，就能像吗喽一样快乐蹦跶。" },
+    moneyGiver: { name: "碎钞机本机", tag: "愧疚隐形负资产者", avatar: "💸", desc: "【愧疚隐形负资产者】\n总觉得自己是全家人的累赘，每次花钱治疗都伴随深深的负罪感。习惯用极度苛刻省钱和愧疚来自怨自艾。" },
+    thinker: { name: "指标精算师", tag: "敏感多疑内耗王者", avatar: "🤔", desc: "【敏感多疑内耗王者】\n久病成医，精密盘点。总想搞清楚每一个数据背后的因果关系，把自己的身体活生生研究成了一个科研破案现场。" },
+    loner: { name: "孤儿", tag: "冷漠外壳独来独往", avatar: "🖤", desc: "【冷漠是保护壳独来独往】\n情感疏离不想被任何人干扰，潜水是常态。习惯把所有的惊恐、痛苦和眼泪都留给自己独自消化。" },
+    romantic: { name: "多情者", tag: "感性主导大剧脑补官", avatar: "❤️", desc: "【感性主导大剧脑补官】\n见一个爱一个永远在心动，看点煽病友故事就能哭掉三包纸巾。擅长用无可救药的浪漫感化冰冷的纯白病房。" },
+    shocker: { name: "握草人", tag: "情绪大起大落易受惊", avatar: "😲", desc: "【情绪大起大落容易受惊】\n情绪完全写在脸上，一语惊人。看到微调指标大惊小怪，一点风吹草动就能让你的神经系统瞬间起飞。" },
+    drunkard: { name: "赛博高僧", tag: "靠游戏小说麻痹自己", avatar: "🎮", desc: "【靠游戏小说麻痹自己】\n无欲无求不沾现实劫难。只要能逃进游戏、短视频或网络小说的世界里，现实的病痛就追不上你，网络就是你的家。" },
+    loser: { name: "废物", tag: "破罐子破摔总爱自嘲", avatar: "🛌", desc: "【破罐子破摔总爱自嘲】\n自暴自弃伪装成废物英雄，嘴上喊着‘毁灭吧别管我’，但内心深处其实比谁都有一股死撑到底的坚韧和倔强。" }
+};
+
+let currentQuestionIndex = 0;
+let userScores = {};
+
+// 初始化12人格的分数
+function initScores() {
+    for (let key in personalities) { userScores[key] = 0; }
+}
+
+function startTest() {
+    initScores();
+    currentQuestionIndex = 0;
+    document.getElementById('welcome').classList.remove('active');
+    document.getElementById('quiz').classList.add('active');
+    showQuestion();
+}
+
+function showQuestion() {
+    const q = questions[currentQuestionIndex];
+    const progressPercent = ((currentQuestionIndex + 1) / questions.length) * 100;
+    document.getElementById('progress').style.width = progressPercent + '%';
+    document.getElementById('progress-text').innerText = `${currentQuestionIndex + 1}/${questions.length}`;
+
+    document.getElementById('question-text').innerText = q.text;
+    const container = document.getElementById('options-container');
+    container.innerHTML = '';
+
+    q.options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.innerText = opt.text;
+        btn.onclick = () => handleAnswer(opt);
+        container.appendChild(btn);
+    });
+}
+
+function handleAnswer(option) {
+    if (option.score) {
+        for (let key in option.score) {
+            if (userScores.hasOwnProperty(key)) {
+                userScores[key] += option.score[key];
+            }
+        }
+    }
+
+    if (currentQuestionIndex < questions.length - 1) {
+        currentQuestionIndex++;
+        showQuestion();
+    } else {
+        showResult();
+    }
+}
+
+function showResult() {
+    document.getElementById('quiz').classList.remove('active');
+    document.getElementById('result').classList.add('active');
+
+    let maxScore = -1;
+    let finalKey = 'murloc'; // 保底吗喽
+    
+    // 找出积分最高的人格标签
+    for (let key in userScores) {
+        if (userScores[key] > maxScore) {
+            maxScore = userScores[key];
+            finalKey = key;
+        }
+    }
+
+    const p = personalities[finalKey];
+    document.getElementById('res-avatar').innerText = p.avatar;
+    document.getElementById('res-name').innerText = p.name;
+    document.getElementById('res-tag').innerText = p.tag;
+    document.getElementById('res-desc').innerText = p.desc;
+    
+    // 动态生成对应人格的暖心安慰结语
+    let warmText = "💡 给你的暖心话：";
+    if(finalKey === 'gratitude') warmText += "战友，你真的太温柔了。但生病不是你的错，请试着理直气壮地接受别人的爱与照顾，多心疼一下自己！";
+    else if(finalKey === 'anxious') warmText += "放轻松，数据是死的，人是活的。身体偶尔的小波动只是天气变化，天塌下来有医生呢，今晚安心睡个好觉！";
+    else if(finalKey === 'monk') warmText += "高僧固然心静，但也允许自己偶尔动动凡心、哭一场或发个脾气。有烟火气的灵魂，抵抗力才更满格哦！";
+    else if(finalKey === 'complainer') warmText += "请保持你蓬勃旺盛的吐槽生命力！用你密集的毒舌把疾病恶魔狠狠骂退，你是最硬核的抗体！";
+    else if(finalKey === 'murloc') warmText += "乐天派的单细胞吗喽最可爱了。保持这种单纯的快乐，开心就是世界上最顶级、无副作用的特异性免疫调节剂！";
+    else if(finalKey === 'moneyGiver') warmText += "快停止自责！你是在最前线替全家和恶魔肉搏的勇士，家人的支持是你的盾牌，安心被保护，你值得最好的治疗！";
+    else if(finalKey === 'thinker') warmText += "人体是个复杂的动态平衡系统，不是硅基芯片。不需要每个指标都找到完美因果，放过大脑，去放空吧。";
+    else if(finalKey === 'loner') warmText += "冷漠是你的盔甲，但如果累了，群里随时有别的疯子愿意借你一个肩膀。你不需要永远一个人死撑。";
+    else if(finalKey === 'romantic') warmText += "这种对美与爱的捕捉能力，是你对抗冰冷医疗器械最强大的武器。继续用你浪漫的眼睛去填满这个世界吧！";
+    else if(finalKey === 'shocker') warmText += "大惊小怪也是一种及时的情绪宣泄！说明你的生命力极其敏锐，握草完之后，擦干眼泪继续回血！";
+    else if(finalKey === 'drunkard') warmText += "游戏也好、网络也罢，能让你舒服地逃避病痛就是好地方。在你的赛博世界里，你就是战无不胜的王！";
+    else if(finalKey === 'loser') warmText += "嘴上喊着‘我是个小废物’却一直默默坚持到今天的你，其实比谁都勇敢。这种自嘲的韧性，超级酷！";
+    
+    document.getElementById('res-warm').innerText = warmText;
+    
+    // 丝滑滚动到顶部看结果
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
